@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 data class Chatroom(
     val id: String = "",
     val usersIds: List<String> = listOf(),
-    var lastMessage: Timestamp? = null,
-    var lastMessageSenderId: String? = null
+    var lastMessageTimeStamp: Timestamp? = null,
+    var lastMessageSenderId: String? = null,
+    var lastMessage: String? = null
 ) 

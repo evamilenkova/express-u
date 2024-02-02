@@ -1,9 +1,12 @@
 package mk.ukim.finki.expressu.utils
 
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class FirebaseUtil {
 
@@ -18,6 +21,10 @@ class FirebaseUtil {
             }
         }
 
+        fun getUserFromId(id: String): DocumentReference {
+            return allUsers().document(id)
+        }
+
         fun isLoggedIn(): Boolean {
             return currentUserId() != null
         }
@@ -30,16 +37,24 @@ class FirebaseUtil {
             return FirebaseFirestore.getInstance().collection("chatrooms").document(chatroomId)
         }
 
-        fun getChatroomId(userId1: String, userId2: String): String{
-            return if( userId1.hashCode()<userId2.hashCode()){
+        fun getChatroomId(userId1: String, userId2: String): String {
+            return if (userId1.hashCode() < userId2.hashCode()) {
                 "${userId1}_${userId2}"
             } else {
                 "${userId2}_${userId1}"
             }
         }
 
-        fun getChatRoomMessage(chatroomId: String): CollectionReference{
-       return getChatroom(chatroomId).collection("chats")
+        fun getChatRoomMessage(chatroomId: String): CollectionReference {
+            return getChatroom(chatroomId).collection("chats")
+        }
+
+        fun getAllChatRooms(): CollectionReference {
+            return FirebaseFirestore.getInstance().collection("chatrooms")
+        }
+
+        fun timeStampToString(timestamp: Timestamp): String {
+            return SimpleDateFormat("HH:mm", Locale.FRANCE).format(timestamp.toDate())
         }
     }
 }

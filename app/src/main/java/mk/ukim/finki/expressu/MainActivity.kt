@@ -13,10 +13,16 @@ class MainActivity : AppCompatActivity() {
 //    private var _binding: ActivityMainBinding? = null
 //    private val binding get() = _binding!!
 
+    private val chatFragmentTag = "ChatFragmentTag"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
+
+        if (savedInstanceState == null) {
+            openChatFragment()
+        }
 
         val bar: BottomNavigationView = findViewById(R.id.main_bottom_bar)
         val search: ImageView = findViewById(R.id.main_search_btn)
@@ -24,8 +30,7 @@ class MainActivity : AppCompatActivity() {
         bar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_chat -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, ChatFragment()).commit()
+                    openChatFragment()
                     true
                 }
 
@@ -48,5 +53,19 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+    }
+
+    fun openChatFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frame, ChatFragment(), chatFragmentTag).commit()
+    }
+    override fun onResume() {
+        super.onResume()
+
+        // Check if the ChatFragment is not added and add it
+        val chatFragment = supportFragmentManager.findFragmentByTag(chatFragmentTag)
+        if (chatFragment == null) {
+            openChatFragment()
+        }
     }
 }
