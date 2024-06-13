@@ -51,6 +51,12 @@ class UserContactRecyclerAdapter(
     override fun onBindViewHolder(holder: UserContactViewHolder, position: Int, model: User) {
         holder.bind(model)
 
+        FirebaseUtil.getProfilePicStorageRef(model.id).downloadUrl.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                AndroidUtil.setProfilePic(context, task.result, holder.photo)
+            }
+        }
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ChatActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

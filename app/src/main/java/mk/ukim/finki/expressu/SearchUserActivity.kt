@@ -41,8 +41,12 @@ class SearchUserActivity : AppCompatActivity() {
         }
     }
 
-    fun setUpSearchRecycleView(searchName: String) {
-        val query = FirebaseUtil.allUsers().whereGreaterThanOrEqualTo("username", searchName)
+    fun setUpSearchRecycleView(searchTerm: String) {
+        val query = if (searchTerm.trim().any { it.isLetter() }) {
+            FirebaseUtil.allUsers().whereEqualTo("username", searchTerm)
+        } else {
+            FirebaseUtil.allUsers().whereEqualTo("phoneNumber", searchTerm)
+        }
 
         val options: FirestoreRecyclerOptions<User> =
             FirestoreRecyclerOptions.Builder<User>()

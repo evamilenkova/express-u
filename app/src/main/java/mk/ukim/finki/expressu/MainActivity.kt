@@ -2,9 +2,11 @@ package mk.ukim.finki.expressu
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import mk.ukim.finki.expressu.fragments.ChatFragment
 import mk.ukim.finki.expressu.fragments.ProfileFragment
 
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            openChatFragment()
+            // openChatFragment()
         }
 
         val bar: BottomNavigationView = findViewById(R.id.main_bottom_bar)
@@ -53,19 +55,30 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        getFCMToken()
     }
 
     fun openChatFragment() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame, ChatFragment(), chatFragmentTag).commit()
     }
+
     override fun onResume() {
         super.onResume()
 
         // Check if the ChatFragment is not added and add it
         val chatFragment = supportFragmentManager.findFragmentByTag(chatFragmentTag)
-        if (chatFragment == null) {
-            openChatFragment()
+//        if (chatFragment == null) {
+//            openChatFragment()
+//        }
+    }
+
+
+    fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.i("My token", task.result)
+            }
         }
     }
 }

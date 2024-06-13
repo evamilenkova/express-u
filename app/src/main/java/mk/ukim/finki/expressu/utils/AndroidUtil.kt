@@ -2,7 +2,11 @@ package mk.ukim.finki.expressu.utils
 
 import android.content.Context
 import android.content.Intent
+import android.widget.ImageView
 import android.widget.Toast
+import android.net.Uri
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import mk.ukim.finki.expressu.model.User
 
 class AndroidUtil {
@@ -28,6 +32,10 @@ class AndroidUtil {
                 intent.getStringExtra("username")!!,
                 intent.getStringExtra("phone")!!
             )
+        }
+
+        fun setProfilePic(context: Context, imageUri: Uri, imageView: ImageView) {
+            Glide.with(context).load(imageUri).apply(RequestOptions.circleCropTransform()).into(imageView)
         }
     }
 

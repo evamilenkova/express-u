@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -62,9 +63,17 @@ class RecentChatRecyclerAdapter(
                     val sendByMe = chatroom.lastMessageSenderId == currentUserId
 
                     val model = it.result.toObject(User::class.java)
-                    holder.name.text = model?.username
+                    FirebaseUtil.getProfilePicStorageRef(model!!.id).downloadUrl.addOnCompleteListener { t ->
+                        if (t.isSuccessful) {
+                            AndroidUtil.setProfilePic(context, t.result, holder.photo)
+                        }
+                    }
+                    val message = chatroom.lastMessage?.let { message ->
+                        message.substring(0, minOf(15, message.length))
+                    }
+                    holder.name.text = model.username
                     holder.message.text =
-                        if (sendByMe) "You: ${chatroom.lastMessage}" else chatroom.lastMessage
+                        if (sendByMe) "You: ${message}" else message
                     holder.time.text =
                         FirebaseUtil.timeStampToString(chatroom.lastMessageTimeStamp!!)
 
@@ -72,7 +81,7 @@ class RecentChatRecyclerAdapter(
 
                         val intent = Intent(context, ChatActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        AndroidUtil.passUserAsIntent(intent, model!!)
+                        AndroidUtil.passUserAsIntent(intent, model)
                         context.startActivity(intent)
                     }
                 }

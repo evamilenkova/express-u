@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -55,6 +57,20 @@ class FirebaseUtil {
 
         fun timeStampToString(timestamp: Timestamp): String {
             return SimpleDateFormat("HH:mm", Locale.FRANCE).format(timestamp.toDate())
+        }
+
+        fun getCurrentProfilePicStorageRef(): StorageReference{
+            return FirebaseStorage.getInstance().reference.child("profile_pic")
+                .child(currentUserId()!!)
+        }
+
+        fun getProfilePicStorageRef(id: String): StorageReference{
+            return FirebaseStorage.getInstance().reference.child("profile_pic")
+                .child(id)
+        }
+
+        fun logout() {
+            FirebaseAuth.getInstance().signOut()
         }
     }
 }

@@ -30,6 +30,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var sendMessageButton: ImageButton
     private lateinit var messageInput: EditText
     private lateinit var chatMessageAdapter: ChatRecyclerAdapter
+    private lateinit var userPhoto: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +44,19 @@ class ChatActivity : AppCompatActivity() {
         messagesRecylcerView = findViewById(R.id.messages_recycler_view)
         val username: TextView = findViewById(R.id.chat_username)
         val backBtn: ImageButton = findViewById(R.id.back_btn)
+        userPhoto = findViewById(R.id.profile_pic)
         //other code , what code?
 
 
         username.text = otherUser.username
         backBtn.setOnClickListener {
             onBackPressed()
+        }
+
+        FirebaseUtil.getProfilePicStorageRef(otherUser.id).downloadUrl.addOnCompleteListener { t ->
+            if (t.isSuccessful) {
+                AndroidUtil.setProfilePic(this, t.result, userPhoto)
+            }
         }
 
         this.sendMessageButton.setOnClickListener {

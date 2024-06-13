@@ -104,7 +104,6 @@
             android:background="@drawable/edit_text_rounded_courner"
             android:elevation="6dp"
             android:hint="Mobile"
-            app:ccp_defaultNameCode="Macedonia"
             android:inputType="phone"
             android:id="@+id/login_mobile_number"
             android:minHeight="48dp"
