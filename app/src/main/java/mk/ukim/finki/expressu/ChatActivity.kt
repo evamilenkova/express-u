@@ -1,75 +1,151 @@
 package mk.ukim.finki.expressu
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import android.speech.RecognizerIntent
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import mk.ukim.finki.expressu.adapter.ChatRecyclerAdapter
-import mk.ukim.finki.expressu.adapter.UserContactRecyclerAdapter
+import mk.ukim.finki.expressu.databinding.ActivityChatBinding
+import mk.ukim.finki.expressu.fragments.WrapContentLinearLayoutManager
 import mk.ukim.finki.expressu.model.ChatMessage
 import mk.ukim.finki.expressu.model.Chatroom
 import mk.ukim.finki.expressu.model.User
+import mk.ukim.finki.expressu.translationUtils.TranslatorRepository
 import mk.ukim.finki.expressu.utils.AndroidUtil
 import mk.ukim.finki.expressu.utils.FirebaseUtil
+import mk.ukim.finki.expressu.utils.NotificationUtil
+import org.json.JSONObject
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity() {
 
-    private lateinit var otherUser: User
-    private lateinit var chatroomId: String
-    private lateinit var messagesRecylcerView: RecyclerView
-    private var chatroom: Chatroom? = null
-    private lateinit var currentUserId: String
-    private lateinit var sendMessageButton: ImageButton
-    private lateinit var messageInput: EditText
-    private lateinit var chatMessageAdapter: ChatRecyclerAdapter
-    private lateinit var userPhoto: ImageView
+    private var _binding: ActivityChatBinding? = null
 
+
+    private lateinit var chatMessageAdapter: ChatRecyclerAdapter
+    private val binding get() = _binding!!
+    private lateinit var otherUser: User
+    private lateinit var currentUser: User
+    private lateinit var chatroomId: String
+    private lateinit var currentUserId: String
+    private lateinit var messagesRecyclerView: RecyclerView
+    private var chatroom: Chatroom? = null
+
+
+    private lateinit var imagePickLauncher: ActivityResultLauncher<Intent>
+    private lateinit var speechResultLauncher: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+        _binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         currentUserId = FirebaseUtil.currentUserId()!!
         otherUser = AndroidUtil.getUserFromIntent(intent)
         chatroomId = FirebaseUtil.getChatroomId(currentUserId, otherUser.id)
-        sendMessageButton = findViewById(R.id.sendMessageBtn)
-        messageInput = findViewById(R.id.chat_message)
-        messagesRecylcerView = findViewById(R.id.messages_recycler_view)
+
+        messagesRecyclerView = binding.messagesRecyclerView
         val username: TextView = findViewById(R.id.chat_username)
         val backBtn: ImageButton = findViewById(R.id.back_btn)
-        userPhoto = findViewById(R.id.profile_pic)
-        //other code , what code?
 
 
-        username.text = otherUser.username
+
+        FirebaseUtil.currentUserDetails()?.get()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                currentUser = task.result.toObject(User::class.java)!!
+            }
+        }
+
+        username.text = otherUser.phone
         backBtn.setOnClickListener {
             onBackPressed()
         }
 
         FirebaseUtil.getProfilePicStorageRef(otherUser.id).downloadUrl.addOnCompleteListener { t ->
             if (t.isSuccessful) {
-                AndroidUtil.setProfilePic(this, t.result, userPhoto)
+                AndroidUtil.setProfilePic(this, t.result, binding.profilePictureChat)
             }
         }
 
-        this.sendMessageButton.setOnClickListener {
-            val message = this.messageInput.text.toString().trim()
-            if (!message.isEmpty()) sendMessageToUser(message)
+
+        binding.microphone.setOnClickListener {
+            startSpeechToText()
         }
 
-        getOrCreateChatroomModel();
-        setUpChatRecyclerView();
+        speechResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK && result.data != null) {
+                    val results =
+                        result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    results?.let {
+                        binding.chatMessage.setText(it[0].toString())
+                    }
+                }
+            }
+
+        binding.sendPhoto.setOnClickListener {
+            ImagePicker.with(this).cropSquare().compress(512).createIntent {
+                imagePickLauncher.launch(it)
+            }
+        }
+
+        binding.sendMessageBtn.setOnClickListener {
+            val message = binding.chatMessage.text.toString().trim()
+            if (message.isNotEmpty()) sendMessageToUser(message)
+        }
+
+        imagePickLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data != null && data.data != null) {
+                        data.data?.let {
+                            val photoName = it.lastPathSegment
+                            FirebaseUtil.getChatImagesStorageRef(photoName.toString()).putFile(it)
+                                .addOnCompleteListener {
+                                    val chatMessage = ChatMessage(
+                                        senderId = currentUserId,
+                                        photoUrl = photoName
+                                    )
+                                    chatroom?.photoSend = true
+                                    saveChatMessage(chatMessage)
+                                    FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
+                                }
+                        }
+                    }
+                }
+            }
+
+        getOrCreateChatroomModel()
+        setUpChatRecyclerView()
+    }
+
+    private fun startSpeechToText() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+
+        if (intent.resolveActivity(packageManager) != null) {
+            speechResultLauncher.launch(intent)
+        } else {
+            AndroidUtil.showToast(this, "Speech recognition not available")
+        }
     }
 
 
-    fun setUpChatRecyclerView() {
+    private fun setUpChatRecyclerView() {
         val query = FirebaseUtil.getChatRoomMessage(chatroomId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
 
@@ -78,35 +154,59 @@ class ChatActivity : AppCompatActivity() {
                 .setQuery(query, ChatMessage::class.java)
                 .build()
 
-        chatMessageAdapter = ChatRecyclerAdapter(options, context = applicationContext)
-        val manager = LinearLayoutManager(this)
+        chatMessageAdapter = ChatRecyclerAdapter(options, applicationContext)
+        val manager = WrapContentLinearLayoutManager(this)
         manager.reverseLayout = true
-        messagesRecylcerView.layoutManager = manager
-        messagesRecylcerView.adapter = chatMessageAdapter
-        chatMessageAdapter.startListening()
+        messagesRecyclerView.layoutManager = manager
+        messagesRecyclerView.adapter = chatMessageAdapter
         chatMessageAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                messagesRecylcerView.smoothScrollToPosition(0)
+                messagesRecyclerView.smoothScrollToPosition(0)
             }
         })
     }
 
-    fun sendMessageToUser(message: String) {
+    private fun sendMessageToUser(message: String) {
         chatroom?.lastMessageTimeStamp = Timestamp.now()
         chatroom?.lastMessageSenderId = currentUserId
         chatroom?.lastMessage = message
-        FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
-        val chatMessage = ChatMessage(message, currentUserId)
+        chatroom?.photoSend = false
 
+
+        if (otherUser.language != currentUser.language) {
+            TranslatorRepository.translateText(
+                message,
+                otherUser.language
+            ) { translatedMessage ->
+                val chatMessage = ChatMessage(
+                    originalMessage = message,
+                    translatedMessage = translatedMessage ?: "",
+                    senderId = currentUserId
+                )
+                chatroom?.lastMessageTranslated = translatedMessage ?: ""
+                saveChatMessage(chatMessage)
+                FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
+            }
+        } else {
+            val chatMessage = ChatMessage(
+                originalMessage = message,
+                senderId = currentUserId
+            )
+            saveChatMessage(chatMessage)
+            FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
+        }
+    }
+
+    private fun saveChatMessage(chatMessage: ChatMessage) {
         FirebaseUtil.getChatRoomMessage(chatroomId).add(chatMessage).addOnCompleteListener {
             if (it.isSuccessful) {
-                messageInput.setText("")
+                binding.chatMessage.setText("")
             }
         }
     }
 
-    fun getOrCreateChatroomModel() {
+    private fun getOrCreateChatroomModel() {
         FirebaseUtil.getChatroom(chatroomId).get().addOnCompleteListener {
             if (it.isSuccessful) {
                 chatroom = it.result.toObject(Chatroom::class.java)
@@ -117,11 +217,54 @@ class ChatActivity : AppCompatActivity() {
                             chatroomId, listOf(currentUserId, otherUser.id),
                             Timestamp.now(),
                             ""
-                        );
+                        )
 
                     FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
                 }
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        chatMessageAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        chatMessageAdapter.stopListening()
+    }
+
+    private fun sendNotification(sendMessage: String) {
+        try {
+            val json = JSONObject().apply {
+                val notification = JSONObject().apply {
+                    put("title", currentUser.username)
+                    put("body", sendMessage)
+                }
+
+                val data = JSONObject().apply {
+                    put("userId", currentUserId)
+                }
+
+                val message = JSONObject().apply {
+                    put("notification", notification)
+                    put("data", data)
+                    put("token", otherUser.fcmToken)
+                }
+
+                put("message", message)
+            }
+
+            NotificationUtil.callAPI(json)
+        } catch (_: Exception) {
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_SPEECH_INPUT = 100
+    }
+
 }
+
+

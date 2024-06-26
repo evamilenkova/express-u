@@ -7,5 +7,7 @@ data class Chatroom(
     val usersIds: List<String> = listOf(),
     var lastMessageTimeStamp: Timestamp? = null,
     var lastMessageSenderId: String? = null,
-    var lastMessage: String? = null
-) 
+    var lastMessage: String? = null,
+    var lastMessageTranslated: String? = null,
+    var photoSend: Boolean? = null
+)

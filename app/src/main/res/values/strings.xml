@@ -1,5 +1,25 @@
 <resources>
-    <string name="app_name">ExpressU</string>
+    <string name="app_name">Chatr.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_mobile_number">Enter Mobile Number</string>
+    <string name="get_code">Get code</string>
+    <string name="enter_code">Enter Code</string>
+    <string name="enter_your_username">Enter your username</string>
+    <string name="logout">Logout</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="mobile">Mobile</string>
+    <string name="username">Username</string>
+    <string name="update_profile">Update profile</string>
+    <string name="express_you">Express you</string>
+    <string name="back_button">back button</string>
+    <string name="add_photo">Add photo</string>
+    <string name="send_photo">send photo</string>
+    <string name="send_message">send message</string>
+    <string name="no_recent_chat_search_users_and_start_chatting">No Recent Chats. Search users and start chatting!</string>
+    <string name="search_user">Search User</string>
+    <string name="username_phone_number">Username/Phone Number</string>
+    <string name="no_users_found_try_different_username_phone_number">Oops!
+        No users found. Try different username or phone number!</string>
+    <string name="microphone">microphone</string>
 </resources>

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="10dp"
-    android:padding="1dp"
-    android:background="@drawable/edit_text_rounded_courner"
-    android:elevation="3dp">
+    android:layout_margin="15dp"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:elevation="15dp"
+    android:padding="1dp">
 
-
-    <include
-        layout="@layout/profile_pic_view"
+    <ImageView
+        android:id="@+id/profile_pic"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:layout_gravity="center"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:contentDescription="@string/profile_picture"
+        android:scaleType="fitCenter"
+        android:src="@drawable/person_icon_circle" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,9 +31,10 @@
                 android:id="@+id/username_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Username"
+                android:fontFamily="@font/urbanist_regular"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Username" />
 
             <TextView
                 android:id="@+id/last_message_text_time"
@@ -40,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
+                android:fontFamily="@font/urbanist_regular"
                 tools:text="0000000" />
 
 
@@ -49,8 +52,9 @@
             android:id="@+id/last_message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="+999999999"
-            android:textSize="18sp" />
+            android:fontFamily="@font/urbanist_regular"
+            android:textSize="18sp"
+            tools:text="+999999999" />
 
     </LinearLayout>
 

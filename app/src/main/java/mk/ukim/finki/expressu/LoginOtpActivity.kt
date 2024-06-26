@@ -41,13 +41,13 @@ class LoginOtpActivity : AppCompatActivity() {
         val otp = binding.loginOtp
 
         phoneNumber?.let {
-           sendOtp(it, false)
-           // AndroidUtil.showToast(applicationContext, phoneNumber.toString())
+            sendOtp(it, false)
+            // AndroidUtil.showToast(applicationContext, phoneNumber.toString())
         }
 
         binding.loginNextBtn.setOnClickListener {
             val enteredOtp = otp.text.toString()
-            val credentials = PhoneAuthProvider.getCredential(verificationCode,enteredOtp)
+            val credentials = PhoneAuthProvider.getCredential(verificationCode, enteredOtp)
             signIn(credentials)
         }
 
@@ -58,12 +58,11 @@ class LoginOtpActivity : AppCompatActivity() {
     }
 
 
-    fun sendOtp(phoneNumber: String, isResend: Boolean) {
+    private fun sendOtp(phoneNumber: String, isResend: Boolean) {
 
-        //startResendTimer
+        //startResendTimer()
+        setProgressBar(true)
         CoroutineScope(Dispatchers.Main).launch {
-            setProgressBar(true)
-
 
             val phoneAuthOptions = withContext(Dispatchers.Default) {
                 val builder = PhoneAuthOptions.newBuilder(mAuth)
@@ -73,20 +72,23 @@ class LoginOtpActivity : AppCompatActivity() {
                     .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                             signIn(phoneAuthCredential)
-//                            setProgressBar(false)
                         }
 
                         override fun onVerificationFailed(p0: FirebaseException) {
                             AndroidUtil.showToast(applicationContext, "OTP verification failed")
-                          //  setProgressBar(false)
                         }
 
-                        override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                        override fun onCodeSent(
+                            p0: String,
+                            p1: PhoneAuthProvider.ForceResendingToken
+                        ) {
                             super.onCodeSent(p0, p1)
                             verificationCode = p0
                             resendingToken = p1
-                            AndroidUtil.showToast(applicationContext, "OTP verification sent successfully")
-                          //  setProgressBar(false)
+                            AndroidUtil.showToast(
+                                applicationContext,
+                                "OTP verification sent successfully"
+                            )
                         }
                     })
                 setProgressBar(false)
@@ -101,16 +103,18 @@ class LoginOtpActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun setProgressBar(isVisible: Boolean) {
-        withContext(Dispatchers.Main) {
+    private fun setProgressBar(isVisible: Boolean) {
+        runOnUiThread {
+            binding.loginProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
             binding.loginNextBtn.visibility = if (isVisible) View.GONE else View.VISIBLE
         }
     }
 
     private fun signIn(phoneAuthCredential: PhoneAuthCredential) {
+        setProgressBar(true)
+
         mAuth.signInWithCredential(phoneAuthCredential)
             .addOnCompleteListener { task ->
-//                setInProgress(false)
                 if (task.isSuccessful) {
                     val intent = Intent(this@LoginOtpActivity, LoginUsernameActivity::class.java)
                     intent.putExtra("phone", phoneNumber)
@@ -122,26 +126,26 @@ class LoginOtpActivity : AppCompatActivity() {
 
     }
 
-    fun startResendTimer() {
-        val resendOtpTextView = binding.resendOtpTextBtn
-       resendOtpTextView.isEnabled = false
-        val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                timeout--
-                runOnUiThread {
-                    resendOtpTextView.text = "Resend OTP in $timeout seconds"
-                }
-                if (timeout <= 0) {
-                    timeout = 60L
-                    timer.cancel()
-                    runOnUiThread {
-                        resendOtpTextView.isEnabled = true
-                    }
-                }
-            }
-        }, 0, 1000)
-    }
+//    fun startResendTimer() {
+//        val resendOtpTextView = binding.resendOtpTextBtn
+//        resendOtpTextView.isEnabled = false
+//        val timer = Timer()
+//        timer.schedule(object : TimerTask() {
+//            override fun run() {
+//                timeout--
+//                runOnUiThread {
+//                    resendOtpTextView.text = "Resend OTP in $timeout seconds"
+//                }
+//                if (timeout <= 0) {
+//                    timeout = 60L
+//                    timer.cancel()
+//                    runOnUiThread {
+//                        resendOtpTextView.isEnabled = true
+//                    }
+//                }
+//            }
+//        }, 0, 1000)
+//    }
 
 
 }

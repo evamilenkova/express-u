@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:weightSum="100"
-    android:layout_margin="20dp"
+    android:padding="30dp"
     tools:context=".LoginPhoneNumberActivity">
 
 
@@ -18,8 +18,8 @@
         android:layout_weight="20">
 
         <RelativeLayout
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="10dp"
             android:background="@drawable/circular_bg"
             android:backgroundTint="@color/my_primary">
@@ -27,14 +27,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="23sp"
                 android:layout_centerInParent="true"
                 android:textColor="@color/white"
                 android:text="1" />
+
         </RelativeLayout>
         <RelativeLayout
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="10dp"
             android:background="@drawable/circular_bg"
             android:backgroundTint="@color/gray">
@@ -42,14 +43,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="23sp"
                 android:layout_centerInParent="true"
                 android:textColor="@color/white"
                 android:text="2" />
         </RelativeLayout>
         <RelativeLayout
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="10dp"
             android:background="@drawable/circular_bg"
             android:backgroundTint="@color/gray">
@@ -57,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="23sp"
                 android:layout_centerInParent="true"
                 android:textColor="@color/white"
                 android:text="3" />
@@ -66,8 +67,8 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:src="@drawable/phone_icon"
         app:tint="@color/my_primary"
         android:layout_weight="20"/>
@@ -76,17 +77,18 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Mobile Number"
-        android:gravity="center_vertical"
+        android:text="@string/enter_mobile_number"
+        android:fontFamily="@font/urbanist_regular"
+        android:gravity="center"
         android:textStyle="bold"
-        android:layout_weight="5"
+        android:layout_weight="10"
         android:textSize="25sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_weight="5"
+        android:layout_weight="10"
         android:orientation="horizontal">
 
         <com.hbb20.CountryCodePicker
@@ -94,6 +96,7 @@
             android:layout_height="wrap_content"
             app:ccp_showNameCode="false"
             app:ccp_showFlag="false"
+
             android:id="@+id/login_country_code"
             app:ccp_defaultPhoneCode="389"/>
 
@@ -101,9 +104,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/edit_text_rounded_courner"
-            android:elevation="6dp"
+            android:background="@drawable/edit_text_rounded_corner"
+            android:elevation="7dp"
             android:hint="Mobile"
+            android:fontFamily="@font/urbanist_regular"
+
             android:inputType="phone"
             android:id="@+id/login_mobile_number"
             android:minHeight="48dp"
@@ -118,13 +123,16 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send OTP"
+            android:text="@string/get_code"
             android:id="@+id/send_otp_button"
             android:padding="10dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/urbanist_regular"
             android:background="@drawable/button_rounded_corner"/>
 
         <ProgressBar
             android:layout_width="32dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:id="@+id/login_progress_bar"
             android:layout_height="wrap_content"

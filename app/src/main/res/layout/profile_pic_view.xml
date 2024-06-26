@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/profile_pic"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/circular_bg"
-        android:src="@drawable/person_icon"
+        android:src="@drawable/person_filled_icon"
         android:backgroundTint="@color/off_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -9,6 +9,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import mk.ukim.finki.expressu.fragments.ChatFragment
 import mk.ukim.finki.expressu.fragments.ProfileFragment
+import mk.ukim.finki.expressu.translationUtils.LanguageManager
+import mk.ukim.finki.expressu.translationUtils.TranslatorRepository
+import mk.ukim.finki.expressu.utils.FirebaseUtil
 
 
 class MainActivity : AppCompatActivity() {
@@ -16,14 +19,20 @@ class MainActivity : AppCompatActivity() {
 //    private val binding get() = _binding!!
 
     private val chatFragmentTag = "ChatFragmentTag"
+    private var currentFragmentTag: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        LanguageManager.fetchLanguages(TranslatorRepository) {
+            Log.i("LANG", "loaded successfully")
+        }
+
         super.onCreate(savedInstanceState)
 //        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            // openChatFragment()
+            openChatFragment()
         }
 
         val bar: BottomNavigationView = findViewById(R.id.main_bottom_bar)
@@ -37,8 +46,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_profile -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, ProfileFragment()).commit()
+                    openProfileFragment()
                     true
                 }
 
@@ -61,13 +69,19 @@ class MainActivity : AppCompatActivity() {
     fun openChatFragment() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame, ChatFragment(), chatFragmentTag).commit()
+        currentFragmentTag = chatFragmentTag
+    }
+
+    fun openProfileFragment(){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frame, ProfileFragment()).commit()
     }
 
     override fun onResume() {
         super.onResume()
 
         // Check if the ChatFragment is not added and add it
-        val chatFragment = supportFragmentManager.findFragmentByTag(chatFragmentTag)
+//        val chatFragment = supportFragmentManager.findFragmentByTag(chatFragmentTag)
 //        if (chatFragment == null) {
 //            openChatFragment()
 //        }
@@ -77,8 +91,18 @@ class MainActivity : AppCompatActivity() {
     fun getFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Log.i("My token", task.result)
+                FirebaseUtil.currentUserDetails()?.update("fcmToken", task.result)
             }
         }
     }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
 }

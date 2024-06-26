@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="@drawable/edit_text_rounded_courner"
-    android:elevation="3dp">
+    android:layout_margin="15dp"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:elevation="15dp">
 
     <include
         layout="@layout/profile_pic_view"
@@ -23,14 +23,18 @@
             android:id="@+id/username_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username"
+            android:fontFamily="@font/urbanist_regular"
+            android:text="@string/username"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+
 
         <TextView
             android:id="@+id/phone_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_regular"
             android:text="+999999999"
             android:textSize="18sp" />
 

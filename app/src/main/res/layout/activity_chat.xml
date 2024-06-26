@@ -20,18 +20,20 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back_button"
             android:src="@drawable/icon_back"
             app:tint="@color/white" />
 
-        <include
+        <ImageView
             android:id="@+id/profile_picture_chat"
-            layout="@layout/profile_pic_view"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="6dp"
-            android:layout_toEndOf="@id/back_btn" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toEndOf="@id/back_btn"
+            android:contentDescription="@string/profile_picture"
+            android:src="@drawable/person_icon_circle_light" />
 
         <TextView
             android:id="@+id/chat_username"
@@ -39,8 +41,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:layout_toRightOf="@+id/profile_picture_chat"
-            android:text="Username"
+            android:layout_toEndOf="@+id/profile_picture_chat"
+            android:fontFamily="@font/urbanist_regular"
+            android:text="@string/username"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -69,11 +72,36 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_margin="10dp"
-            android:layout_toLeftOf="@id/sendMessageBtn"
-            android:background="@drawable/edit_text_rounded_courner"
+            android:layout_toStartOf="@id/microphone"
+            android:background="@drawable/edit_text_rounded_corner"
             android:elevation="5dp"
-            android:hint="Express you"
+            android:hint="@string/express_you"
             android:padding="10dp" />
+
+        <ImageButton
+            android:id="@+id/microphone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_toStartOf="@id/sendPhoto"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/microphone"
+            android:padding="4dp"
+            android:src="@drawable/microphone_svgrepo_com"
+            app:tint="@color/my_primary" />
+
+        <ImageButton
+            android:id="@+id/sendPhoto"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_toStartOf="@id/sendMessageBtn"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/send_photo"
+            android:padding="4dp"
+            android:src="@drawable/photo_icon"
+            app:tint="@color/my_primary" />
+
 
         <ImageButton
             android:id="@+id/sendMessageBtn"
@@ -82,6 +110,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/send_message"
             android:padding="4dp"
             android:src="@drawable/icon_send"
             app:tint="@color/my_primary" />

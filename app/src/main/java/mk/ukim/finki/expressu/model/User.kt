@@ -6,5 +6,7 @@ data class User(
     val id: String = "0",
     val phone: String = "",
     var username: String = "",
-    val createdOn: Timestamp = Timestamp.now()
+    val createdOn: Timestamp = Timestamp.now(),
+    var language: String = "en",
+    val fcmToken: String = ""
 )

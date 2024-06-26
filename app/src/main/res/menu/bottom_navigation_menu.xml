@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Chats"
-        android:icon="@drawable/chat_icon"
-        android:id="@+id/menu_chat"/>
+    <item
+        android:id="@+id/menu_chat"
+        android:background="@drawable/background_transparent"
+        android:fontFamily="@font/urbanist_regular"
+        android:icon="@drawable/chat_svgrepo_com"
+        android:title="Chats" />
 
-    <item android:title="Profile"
-        android:icon="@drawable/person_icon"
-        android:id="@+id/menu_profile"/>
+    <item
+        android:id="@+id/menu_profile"
+        android:background="@drawable/background_transparent"
+        android:fontFamily="@font/urbanist_regular"
+        android:icon="@drawable/person_filled_icon"
+        android:title="Profile" />
 
 </menu>

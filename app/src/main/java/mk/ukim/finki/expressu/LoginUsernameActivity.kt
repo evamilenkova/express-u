@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.google.firebase.Timestamp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import mk.ukim.finki.expressu.databinding.ActivityLoginPhoneNumberBinding
 import mk.ukim.finki.expressu.databinding.ActivityLoginUsernameBinding
 import mk.ukim.finki.expressu.model.User
 import mk.ukim.finki.expressu.utils.FirebaseUtil
@@ -34,10 +31,10 @@ class LoginUsernameActivity : AppCompatActivity() {
 
     }
 
-    fun getUsername() {
-        //   setInProgress(true)
+    private fun getUsername() {
+        setProgressBar(true)
         FirebaseUtil.currentUserDetails()?.get()?.addOnCompleteListener { task ->
-            // setInProgress(false)
+            setProgressBar(false)
             if (task.isSuccessful) {
                 user = task.result?.toObject(User::class.java)
                 user?.let {
@@ -47,12 +44,12 @@ class LoginUsernameActivity : AppCompatActivity() {
         }
     }
 
-    fun setUsername() {
-        //   setInProgress(true)
+    private fun setUsername() {
+        setProgressBar(true)
         val username = binding.loginUsername.text.toString()
         if (username.isEmpty() || username.length < 3) {
-            binding.loginUsername.setError("Username length should be at least 3 characters")
-            return;
+            binding.loginUsername.error = "Username length should be at least 3 characters"
+            return
         }
         if (user != null) {
             user!!.username = username
@@ -62,7 +59,7 @@ class LoginUsernameActivity : AppCompatActivity() {
         }
 
         FirebaseUtil.currentUserDetails()?.set(user!!)?.addOnCompleteListener { task ->
-            // setInProgress(false)
+            setProgressBar(false)
             if (task.isSuccessful) {
                 val intent = Intent(this@LoginUsernameActivity, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -71,9 +68,8 @@ class LoginUsernameActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun setProgressBar(isVisible: Boolean) {
-        withContext(Dispatchers.Main) {
-            binding.loginFinishBtn.visibility = if (isVisible) View.GONE else View.VISIBLE
-        }
+    private fun setProgressBar(isVisible: Boolean) {
+        binding.loginFinishBtn.visibility = if (isVisible) View.GONE else View.VISIBLE
+        binding.loginProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 }

@@ -21,6 +21,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back_button"
             android:src="@drawable/icon_back"
             app:tint="@color/white" />
 
@@ -28,8 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/back_btn"
-            android:text="Search User"
+            android:layout_toEndOf="@+id/back_btn"
+            android:fontFamily="@font/urbanist_regular"
+            android:text="@string/search_user"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -50,25 +52,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_toLeftOf="@+id/search_user_btn"
-            android:background="@drawable/edit_text_rounded_courner"
+            android:layout_toStartOf="@+id/search_user_btn"
+            android:background="@drawable/edit_text_rounded_corner"
             android:elevation="6dp"
-            android:hint="Username"
+            android:fontFamily="@font/urbanist_regular"
+            android:hint="@string/username_phone_number"
             android:padding="11dp" />
 
         <ImageView
             android:id="@+id/search_user_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:backgroundTint="@color/off_white"
+            android:contentDescription="@string/search_hint"
             android:padding="4dp"
-            android:src="@drawable/icon_search"
+            android:src="@drawable/search_icon"
             app:tint="@color/my_primary" />
 
     </RelativeLayout>
@@ -78,5 +79,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/search_user_layout" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
+        android:indeterminateTint="@color/my_primary"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/noUsersFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/urbanist_regular"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/no_users_found_try_different_username_phone_number"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    "
+
 
 </RelativeLayout>
