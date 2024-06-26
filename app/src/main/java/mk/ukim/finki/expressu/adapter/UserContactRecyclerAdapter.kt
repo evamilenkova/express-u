@@ -37,7 +37,6 @@ class UserContactRecyclerAdapter(
                 name.text = user.username
             }
             phone.text = user.phone
-            // image view bind too :)
         }
     }
 

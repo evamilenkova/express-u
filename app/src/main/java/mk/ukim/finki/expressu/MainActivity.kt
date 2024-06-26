@@ -66,13 +66,13 @@ class MainActivity : AppCompatActivity() {
         getFCMToken()
     }
 
-    fun openChatFragment() {
+    private fun openChatFragment() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame, ChatFragment(), chatFragmentTag).commit()
         currentFragmentTag = chatFragmentTag
     }
 
-    fun openProfileFragment(){
+    private fun openProfileFragment() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame, ProfileFragment()).commit()
     }

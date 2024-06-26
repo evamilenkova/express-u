@@ -89,9 +89,10 @@ class LoginOtpActivity : AppCompatActivity() {
                                 applicationContext,
                                 "OTP verification sent successfully"
                             )
+                            setProgressBar(false)
+
                         }
                     })
-                setProgressBar(false)
                 if (isResend) {
                     builder.setForceResendingToken(resendingToken).build()
                 } else {
@@ -104,10 +105,8 @@ class LoginOtpActivity : AppCompatActivity() {
     }
 
     private fun setProgressBar(isVisible: Boolean) {
-        runOnUiThread {
-            binding.loginProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
-            binding.loginNextBtn.visibility = if (isVisible) View.GONE else View.VISIBLE
-        }
+        binding.loginProgressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+        binding.loginNextBtn.visibility = if (isVisible) View.GONE else View.VISIBLE
     }
 
     private fun signIn(phoneAuthCredential: PhoneAuthCredential) {

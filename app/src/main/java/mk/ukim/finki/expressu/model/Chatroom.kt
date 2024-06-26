@@ -9,5 +9,6 @@ data class Chatroom(
     var lastMessageSenderId: String? = null,
     var lastMessage: String? = null,
     var lastMessageTranslated: String? = null,
-    var photoSend: Boolean? = null
+    var photoSend: Boolean? = null,
+    val lastMessageSeen: Boolean = false
 )

@@ -187,6 +187,7 @@ class ChatActivity : AppCompatActivity() {
                 chatroom?.lastMessageTranslated = translatedMessage ?: ""
                 saveChatMessage(chatMessage)
                 FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
+                //sendNotification(translatedMessage ?: message)
             }
         } else {
             val chatMessage = ChatMessage(
@@ -194,6 +195,7 @@ class ChatActivity : AppCompatActivity() {
                 senderId = currentUserId
             )
             saveChatMessage(chatMessage)
+            //sendNotification(message)
             FirebaseUtil.getChatroom(chatroomId).set(chatroom!!)
         }
     }
@@ -210,7 +212,9 @@ class ChatActivity : AppCompatActivity() {
         FirebaseUtil.getChatroom(chatroomId).get().addOnCompleteListener {
             if (it.isSuccessful) {
                 chatroom = it.result.toObject(Chatroom::class.java)
-
+                if (currentUserId != chatroom?.lastMessageSenderId && chatroom?.lastMessageSeen == false) {
+                    FirebaseUtil.updateSeenStatus(chatroomId, true)
+                }
                 if (chatroom == null) {
                     chatroom =
                         Chatroom(

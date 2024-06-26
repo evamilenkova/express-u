@@ -24,7 +24,6 @@ class FirebaseUtil {
         }
 
         fun initialize() {
-            // Ensure Firestore instance is initialized with the settings
             firestore
         }
 
@@ -52,6 +51,11 @@ class FirebaseUtil {
 
         fun getChatroom(chatroomId: String): DocumentReference {
             return firestore.collection("chatrooms").document(chatroomId)
+        }
+
+        fun updateSeenStatus(chatroomId: String, seen: Boolean) {
+            val chatroomRef = getChatroom(chatroomId)
+            chatroomRef.update("lastMessageSeen", seen)
         }
 
         fun getChatroomId(userId1: String, userId2: String): String {

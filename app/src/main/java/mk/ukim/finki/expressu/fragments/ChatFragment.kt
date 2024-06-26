@@ -79,7 +79,9 @@ class ChatFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (::adapter.isInitialized) adapter.notifyDataSetChanged()
+        if (::adapter.isInitialized) {
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onDestroyView() {

@@ -3,6 +3,7 @@ package mk.ukim.finki.expressu.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,6 +83,11 @@ class RecentChatRecyclerAdapter(
                     holder.time.text =
                         FirebaseUtil.timeStampToString(chatroom.lastMessageTimeStamp!!)
 
+                    if (!sendByMe && !chatroom.lastMessageSeen) {
+                        holder.message.setTypeface(null, Typeface.BOLD)
+                    } else {
+                        holder.message.setTypeface(null, Typeface.NORMAL)
+                    }
                     holder.itemView.setOnClickListener {
 
                         val intent = Intent(context, ChatActivity::class.java)
@@ -97,4 +103,5 @@ class RecentChatRecyclerAdapter(
                 }
             }
     }
+
 }

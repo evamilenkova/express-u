@@ -155,7 +155,7 @@ class ProfileFragment : Fragment() {
             if (position >= 0) {
                 binding.languageSpinner.setSelection(position)
             }
-            FirebaseUtil.getCurrentProfilePicStorageRef().downloadUrl?.addOnCompleteListener { task ->
+            FirebaseUtil.getCurrentProfilePicStorageRef().downloadUrl.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     AndroidUtil.setProfilePic(
                         requireContext(),
@@ -164,7 +164,7 @@ class ProfileFragment : Fragment() {
                     )
                 } else {
                     val exception = task.exception
-                    AndroidUtil.showToast(requireContext(), exception.toString())
+        //                    AndroidUtil.showToast(requireContext(), exception.toString())
                 }
             }
 
